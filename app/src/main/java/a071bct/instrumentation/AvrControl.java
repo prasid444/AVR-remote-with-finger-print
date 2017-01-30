@@ -1,17 +1,20 @@
 package a071bct.instrumentation;
 
 import android.app.KeyguardManager;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.security.keystore.KeyProperties;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -175,6 +178,13 @@ public class AvrControl extends AppCompatActivity {
             catch (IOException e)
             { msg("Error");}
         }
+
+//        Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+
+
+        LinearLayout linearlayout=(LinearLayout)findViewById(R.id.activity_avr_control);
+        Snackbar.make(linearlayout,"Successfully Disconnected",Snackbar.LENGTH_LONG).show();
+
         finish(); //return to the first layout
     }
 
@@ -185,7 +195,7 @@ public class AvrControl extends AppCompatActivity {
         @Override
         protected void onPreExecute()
         {
-            progress = ProgressDialog.show(AvrControl.this, "Connecting...", "Please wait!!!");  //show a progress dialog
+            progress = ProgressDialog.show(AvrControl.this, "Connecting...", "Please wait!!! LOL");  //show a progress dialog
         }
 
         @Override
@@ -215,12 +225,12 @@ public class AvrControl extends AppCompatActivity {
 
             if (!ConnectSuccess)
             {
-                msg("Connection Failed. Is it a SPP Bluetooth? Try again.");
+                msg("Ha Ha Ha Connection Failed. Is it a SPP Bluetooth? Try again.");
                 finish();
             }
             else
             {
-                msg("Connected.");
+                msg("Connected LOL.");
                 isBtConnected = true;
             }
             progress.dismiss();
