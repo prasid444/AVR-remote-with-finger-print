@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_avr_control"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+   android:orientation="vertical"
+    tools:context="a071bct.instrumentation.AvrControl">
+
+    <Button
+        style="@android:style/Widget.Material.Button.Colored"
+        android:layout_width="match_parent"
+        android:id="@+id/disconnect"
+        android:text="Disconnect"
+        android:layout_height="wrap_content"
+        android:padding="5px"/>
+    <Button
+        style="@android:style/Widget.Material.Button.Colored"
+        android:layout_width="match_parent"
+        android:id="@+id/opendoor"
+        android:text="Open Door"
+        android:padding="5dp"
+        android:layout_height="wrap_content" />
+    <Button
+        style="@android:style/Widget.Material.Button.Colored"
+        android:layout_width="match_parent"
+        android:id="@+id/closedoor"
+        android:text="Close Door"
+        android:layout_margin="2px"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
