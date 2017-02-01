@@ -36,7 +36,7 @@ import javax.crypto.NoSuchPaddingException;
 public class AvrControl extends AppCompatActivity {
 
     private static final String TAG = AvrControl.class.getSimpleName();
-
+    LinearLayout linearlayout=(LinearLayout)findViewById(R.id.activity_avr_control);
     private static final String DIALOG_FRAGMENT_TAG = "myFragment";
     private static final String SECRET_MESSAGE = "Very secret message";
     private static final String KEY_NAME_NOT_INVALIDATED = "key_not_invalidated";
@@ -126,7 +126,17 @@ public class AvrControl extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
+                openthedoor();
               //  turnOnLed();      //method to turn on
+            }
+        });
+        cldoor.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                closethedoor();
+                //  turnOnLed();      //method to turn on
             }
         });
 
@@ -163,6 +173,38 @@ public class AvrControl extends AppCompatActivity {
 
     }
 
+    private void closethedoor() {
+        if (btSocket!=null)
+        {
+            try
+            {
+                btSocket.getOutputStream().write("c".toString().getBytes());
+            }
+            catch (IOException e)
+            {
+                msg("Error");
+            }
+        }
+        else{
+            Snackbar.make(linearlayout,"Not available",Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private void openthedoor() {
+        if (btSocket!=null)
+        {
+            try
+            {
+                btSocket.getOutputStream().write("o".toString().getBytes());
+            }
+            catch (IOException e)
+            {
+                msg("Error");
+            }
+        }
+
+    }
+
     private void msg(String s)
     {
         Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
@@ -182,7 +224,7 @@ public class AvrControl extends AppCompatActivity {
 //        Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
 
 
-        LinearLayout linearlayout=(LinearLayout)findViewById(R.id.activity_avr_control);
+
         Snackbar.make(linearlayout,"Successfully Disconnected",Snackbar.LENGTH_LONG).show();
 
         finish(); //return to the first layout
