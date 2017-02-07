@@ -35,8 +35,8 @@ import javax.crypto.NoSuchPaddingException;
 
 public class AvrControl extends AppCompatActivity {
 
-    private static final String TAG = AvrControl.class.getSimpleName();
-    LinearLayout linearlayout=(LinearLayout)findViewById(R.id.activity_avr_control);
+   // private static final String TAG = AvrControl.class.getSimpleName();
+    LinearLayout linearlayout;
     private static final String DIALOG_FRAGMENT_TAG = "myFragment";
     private static final String SECRET_MESSAGE = "Very secret message";
     private static final String KEY_NAME_NOT_INVALIDATED = "key_not_invalidated";
@@ -47,7 +47,7 @@ public class AvrControl extends AppCompatActivity {
     private SharedPreferences mSharedPreferences;
 
 
-    Button btnDis,opdoor,cldoor;
+    Button btnDis,opdoor,cldoor,ldoor,uldoor;
     String address = null;
     private ProgressDialog progress;
     BluetoothAdapter myBluetooth = null;
@@ -70,6 +70,10 @@ public class AvrControl extends AppCompatActivity {
         opdoor= (Button)findViewById(R.id.opendoor);
         cldoor = (Button)findViewById(R.id.closedoor);
          btnDis = (Button)findViewById(R.id.disconnect);
+        ldoor=(Button)findViewById(R.id.lockdoor);
+        uldoor=(Button)findViewById(R.id.unlockdoor);
+        linearlayout=(LinearLayout)findViewById(R.id.activity_avr_control);
+
         new ConnectBT().execute();
 
 
@@ -140,6 +144,18 @@ public class AvrControl extends AppCompatActivity {
             }
         });
 
+        ldoor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                lockthedoor();
+            }
+        });
+        uldoor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                unlockthedoor();
+            }
+        });
         //for checking if there are an lockguard
 //        if (!keyguardManager.isKeyguardSecure()) {
 //            // Show a message that the user hasn't set up a fingerprint or lock screen.
@@ -173,12 +189,46 @@ public class AvrControl extends AppCompatActivity {
 
     }
 
+    private void lockthedoor() {
+        if (btSocket!=null)
+        {
+            try
+            {
+                btSocket.getOutputStream().write("a".toString().getBytes());
+            }
+            catch (IOException e)
+            {
+                msg("Error");
+            }
+        }
+        else{
+            Snackbar.make(linearlayout,"Not available",Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private void unlockthedoor(){
+        if (btSocket!=null)
+        {
+            try
+            {
+                btSocket.getOutputStream().write("b".toString().getBytes());
+            }
+            catch (IOException e)
+            {
+                msg("Error");
+            }
+        }
+        else{
+            Snackbar.make(linearlayout,"Not available",Snackbar.LENGTH_LONG).show();
+        }
+
+    }
     private void closethedoor() {
         if (btSocket!=null)
         {
             try
             {
-                btSocket.getOutputStream().write("c".toString().getBytes());
+                btSocket.getOutputStream().write("j".toString().getBytes());
             }
             catch (IOException e)
             {
@@ -195,7 +245,7 @@ public class AvrControl extends AppCompatActivity {
         {
             try
             {
-                btSocket.getOutputStream().write("o".toString().getBytes());
+                btSocket.getOutputStream().write("i".toString().getBytes());
             }
             catch (IOException e)
             {
@@ -207,6 +257,7 @@ public class AvrControl extends AppCompatActivity {
 
     private void msg(String s)
     {
+        //Snackbar.make(linearlayout,s,Snackbar.LENGTH_LONG).show();
         Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
     }
     private void Disconnect()

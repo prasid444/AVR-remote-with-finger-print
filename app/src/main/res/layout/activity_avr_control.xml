@@ -14,21 +14,24 @@
         android:id="@+id/disconnect"
         android:text="Disconnect"
         android:layout_height="wrap_content"
-        android:padding="5px"/>
+        android:padding="5px"
+        android:elevation="2dp" />
     <Button
         style="@android:style/Widget.Material.Button.Colored"
         android:layout_width="match_parent"
         android:id="@+id/opendoor"
         android:text="Open Door"
         android:padding="5dp"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:elevation="2dp" />
     <Button
         style="@android:style/Widget.Material.Button.Colored"
         android:layout_width="match_parent"
         android:id="@+id/closedoor"
         android:text="Close Door"
         android:layout_margin="2px"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:elevation="2dp" />
 
     <Button
         style="@android:style/Widget.Material.Button.Colored"
@@ -36,7 +39,8 @@
         android:id="@+id/lockdoor"
         android:text="Lock Door"
         android:layout_margin="2px"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:elevation="2dp" />
 
     <Button
         style="@android:style/Widget.Material.Button.Colored"
@@ -44,6 +48,7 @@
         android:id="@+id/unlockdoor"
         android:text="Unlock Door"
         android:layout_margin="2px"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:elevation="2dp" />
 
 </LinearLayout>
