@@ -3,6 +3,7 @@ package a071bct.instrumentation;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +20,8 @@ import java.util.Set;
 public class MainPage extends AppCompatActivity {
     Button btnPaired;
     ListView devicelist;
+
+
     private BluetoothAdapter myBluetooth = null;
     public static String EXTRA_ADDRESS = "device_address";
 

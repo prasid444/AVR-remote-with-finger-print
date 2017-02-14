@@ -1,6 +1,10 @@
 package a071bct.instrumentation;
 
+import android.app.AlarmManager;
 import android.app.KeyguardManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.hardware.fingerprint.FingerprintManager;
@@ -8,12 +12,15 @@ import android.icu.text.LocaleDisplayNames;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.bluetooth.BluetoothSocket;
@@ -71,6 +78,7 @@ public class AvrControl extends AppCompatActivity {
     private KeyStore mKeyStore;
     private KeyGenerator mKeyGenerator;
     private SharedPreferences mSharedPreferences;
+    //boolean doorstate=false;
 
 
     Button btnDis,opdoor,cldoor,ldoor,uldoor;
@@ -86,7 +94,9 @@ public class AvrControl extends AppCompatActivity {
     final int handlerState = 0;        				 //used to identify handler message
     private ConnectedThread mConnectedThread;
     private StringBuilder recDataString = new StringBuilder();
+    //private Context context;
     //spp uuid
+
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +109,9 @@ public class AvrControl extends AppCompatActivity {
 
 //view of the ledControl layout
         setContentView(R.layout.activity_avr_control);
+       // PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().putString("MYADDRESS", address).commit();
+
+
 
         opdoor= (Button)findViewById(R.id.opendoor);
         cldoor = (Button)findViewById(R.id.closedoor);
@@ -208,15 +221,18 @@ public class AvrControl extends AppCompatActivity {
                         String dataInPrint = recDataString.substring(0, length);    // extract string
                         mytext.setText("Data Received: "+dataInPrint);
                         if (readMessage.charAt(0)=='m') {
-                            status.setText("found");
+                            status.setText("Noone at the door");
+                            //createNotification("Someone at the door",1);
                             //clear all string data
                             recDataString.delete(0,length);
+                            //readMessage.replace('m','n');
                             readMessage="n";
                         } else {
-                            status.setText("not dfound");
+                            status.setText("Someone at the door");
+                            //createNotification("Noone",2);
                         }
                         recDataString.delete(0, recDataString.length());
-                        readMessage="n";
+                       // readMessage="n";
                         dataInPrint=" ";
                     }
 //                    int endOfLineIndex = recDataString.indexOf("~");                    // determine the end-of-line
@@ -635,7 +651,7 @@ public class AvrControl extends AppCompatActivity {
 
                 //I send a character when resuming.beginning transmission to check device is connected
                 //If it is not an exception will be thrown in the write method and finish() will be called
-                mConnectedThread.write("x");
+                //mConnectedThread.write("x");
                 isBtConnected = true;
             }
             progress.dismiss();
@@ -680,7 +696,7 @@ public class AvrControl extends AppCompatActivity {
 
 
         public void run() {
-            byte[] buffer = new byte[1];
+            byte[] buffer = new byte[3];
             int bytes;
 
             // Keep looping to listen for received messages
@@ -688,19 +704,15 @@ public class AvrControl extends AppCompatActivity {
                 try {
                     bytes = mmInStream.read(buffer);            //read bytes from input buffer
                     String readMessage = new String(buffer, 0, bytes);
-                    if(readMessage.contains("m")){
-                        bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
-                        buffer=new byte[1];
-                        bytes=0;
-                    }
-                    else {
-                        bluetoothIn.obtainMessage(handlerState, bytes, -1, "n").sendToTarget();
-                        readMessage="";
-                    }
+                    bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
+
+
+
+
                     // Send the obtained bytes to the UI Activity via handler
                    // bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
                 } catch (IOException e) {
-                    break;
+                    //break;
                 }
             }
         }
@@ -719,6 +731,45 @@ public class AvrControl extends AppCompatActivity {
         }
 
 
+    }
+    public void createNotification(String toshow,int id_number){
+
+        //for notification
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setAutoCancel(true)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("Write Nepal")
+                        .setContentText(toshow);
+
+
+// Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, MainPage.class);
+
+// The stack builder object will contain an artificial back stack for the
+// started Activity.
+// This ensures that navigating backward from the Activity leads out of
+// your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+// Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(MainPage.class);
+// Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+// mId allows you to update the notification later on.
+        mBuilder.getNotification().flags|= Notification.FLAG_AUTO_CANCEL;
+        mNotificationManager.notify(id_number, mBuilder.build());
+        //NOTIFY_ME_ID+=1;
+
+
+        Log.e("sasd","notification created");
     }
 }
 
